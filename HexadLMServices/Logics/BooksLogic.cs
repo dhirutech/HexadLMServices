@@ -2,6 +2,7 @@
 using HexadLMServices.Interfaces;
 using HexadLMServices.Models;
 using HexadLMServices.Repositories.Interfaces;
+using System;
 using System.Threading.Tasks;
 using DataModels = HexadLMServices.Repositories.Models;
 
@@ -19,6 +20,9 @@ namespace HexadLMServices.Logics
 
         public async Task<bool> AddBook(Book book)
         {
+            if (book.Id == 0)
+                throw new Exception("Please provide a valid UserId.");
+
             var resBook = _mapper.Map<DataModels.Book>(book);
             var resBookStore = _mapper.Map<DataModels.BookStore>(book);
             return await _booksRepo.AddBook(resBook, resBookStore);

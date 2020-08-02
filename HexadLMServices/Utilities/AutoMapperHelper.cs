@@ -23,6 +23,9 @@ namespace HexadLMServices.Utilities
             CreateMap<DataModels.Book, Book>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.BookId))
                 .ForMember(dest => dest.StockCount, opt => opt.MapFrom(src => src.BookStore.StockCount));
+
+            CreateMap<DataModels.User, User>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
         }
     }
 }
