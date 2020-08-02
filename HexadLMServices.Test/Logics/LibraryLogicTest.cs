@@ -24,6 +24,7 @@ namespace HexadLMServices.Test.Logics
         private List<Book> _bookVMList;
         private BorrowBook _borrowBook;
         private List<DataModel.BookStore> _bookStoreDMList;
+        private List<DataModel.UserBook> _userBookDMList;
 
         [TestInitialize]
         public void TestInitialization()
@@ -35,6 +36,7 @@ namespace HexadLMServices.Test.Logics
             _borrowBook.UserId = 1;
             _borrowBook.BookIds = new List<int>() { 1, 2 };
             _bookStoreDMList = Builder<DataModel.BookStore>.CreateListOfSize(2).Build().ToList();
+            _userBookDMList = Builder<DataModel.UserBook>.CreateListOfSize(2).Build().ToList();
         }
 
         [TestMethod]
@@ -55,7 +57,9 @@ namespace HexadLMServices.Test.Logics
         [TestMethod]
         public async Task BorrowBooks_ReturnsTrue()
         {
+            _userBookDMList = new List<DataModel.UserBook>();
             _mockLibraryRepo.Setup(x => x.GetStockBooks(It.IsAny<List<int>>())).ReturnsAsync(_bookStoreDMList);
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
             _mockLibraryRepo.Setup(x => x.BorrowBooks(It.IsAny<List<DataModel.UserBook>>(), It.IsAny<List<DataModel.BookStore>>())).ReturnsAsync(true);
 
             var response = await _libraryLogic.BorrowBooks(_borrowBook);
@@ -85,8 +89,86 @@ namespace HexadLMServices.Test.Logics
         [TestMethod]
         public async Task BorrowBooks_Returns_Exception2()
         {
-            string expectedError = $"bookId-1 not avaible in store at this moment.";
+            string expectedError = "Only 1 copy of a book can be borrowed at any point of time!.";
+            _borrowBook.BookIds[0] = 3;
+            _borrowBook.BookIds[1] = 3;
+            _mockLibraryRepo.Setup(x => x.GetStockBooks(It.IsAny<List<int>>())).ReturnsAsync(_bookStoreDMList);
+            _mockLibraryRepo.Setup(x => x.BorrowBooks(It.IsAny<List<DataModel.UserBook>>(), It.IsAny<List<DataModel.BookStore>>())).ReturnsAsync(true);
+            try
+            {
+                var response = await _libraryLogic.BorrowBooks(_borrowBook);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.Message, expectedError);
+            }
+        }
+
+        [TestMethod]
+        public async Task BorrowBooks_Returns_Exception3()
+        {
+            string expectedError = "You can't borrow more then 2 books at any point of time!. You have already 2 nos of book(s) available in your borrowed list.";
+
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
+            _mockLibraryRepo.Setup(x => x.GetStockBooks(It.IsAny<List<int>>())).ReturnsAsync(_bookStoreDMList);
+            _mockLibraryRepo.Setup(x => x.BorrowBooks(It.IsAny<List<DataModel.UserBook>>(), It.IsAny<List<DataModel.BookStore>>())).ReturnsAsync(true);
+            try
+            {
+                var response = await _libraryLogic.BorrowBooks(_borrowBook);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.Message, expectedError);
+            }
+        }
+
+        [TestMethod]
+        public async Task BorrowBooks_Returns_Exception4()
+        {
+            string expectedError = "You can't borrow more then 2 books at any point of time!. You have already 1 nos of book(s) available in your borrowed list.";
+            _userBookDMList = Builder<DataModel.UserBook>.CreateListOfSize(1).Build().ToList();
+
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
+            _mockLibraryRepo.Setup(x => x.GetStockBooks(It.IsAny<List<int>>())).ReturnsAsync(_bookStoreDMList);
+            _mockLibraryRepo.Setup(x => x.BorrowBooks(It.IsAny<List<DataModel.UserBook>>(), It.IsAny<List<DataModel.BookStore>>())).ReturnsAsync(true);
+            try
+            {
+                var response = await _libraryLogic.BorrowBooks(_borrowBook);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.Message, expectedError);
+            }
+        }
+
+        [TestMethod]
+        public async Task BorrowBooks_Returns_Exception5()
+        {
+            string expectedError = "Only 1 copy of a book can be borrowed at any point of time!.";
+            _userBookDMList = Builder<DataModel.UserBook>.CreateListOfSize(1).Build().ToList();
+            _borrowBook.BookIds = new List<int>() { 1 };
+
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
+            _mockLibraryRepo.Setup(x => x.GetStockBooks(It.IsAny<List<int>>())).ReturnsAsync(_bookStoreDMList);
+            _mockLibraryRepo.Setup(x => x.BorrowBooks(It.IsAny<List<DataModel.UserBook>>(), It.IsAny<List<DataModel.BookStore>>())).ReturnsAsync(true);
+            try
+            {
+                var response = await _libraryLogic.BorrowBooks(_borrowBook);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.Message, expectedError);
+            }
+        }
+
+        [TestMethod]
+        public async Task BorrowBooks_Returns_Exception6()
+        {
+            string expectedError = "bookId-1 not avaible in store at this moment.";
+            _userBookDMList = new List<DataModel.UserBook>();
             _bookStoreDMList[0].BookId = 3;
+
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
             _mockLibraryRepo.Setup(x => x.GetStockBooks(It.IsAny<List<int>>())).ReturnsAsync(_bookStoreDMList);
             _mockLibraryRepo.Setup(x => x.BorrowBooks(It.IsAny<List<DataModel.UserBook>>(), It.IsAny<List<DataModel.BookStore>>())).ReturnsAsync(true);
             try
