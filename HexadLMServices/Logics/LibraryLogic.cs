@@ -32,12 +32,23 @@ namespace HexadLMServices.Logics
         {
             var userBooks = new List<DataModel.UserBook>();
             var bookinStores = new List<DataModel.BookStore>();
+            var userBooksExist = new List<DataModel.UserBook>();
 
-            if (borrowBooks.BookIds.Count > 2)
-                throw new Exception("You can't borrow more then 2 books at any point of time!.");
             if (borrowBooks.BookIds.Count > 0)
             {
+                if (borrowBooks.BookIds.Count > 2)
+                    throw new Exception("You can't borrow more then 2 books at any point of time!.");
+                if (borrowBooks.BookIds.Count > 1 && borrowBooks.BookIds.Distinct().Count() == 1)
+                    throw new Exception("Only 1 copy of a book can be borrowed at any point of time!.");
+
+                userBooksExist = await _libraryRepo.GetUserBooks(borrowBooks.UserId);
+                if (userBooksExist.Count == 2 || (userBooksExist.Count + borrowBooks.BookIds.Count) > 2)
+                    throw new Exception($"You can't borrow more then 2 books at any point of time!. You have already {userBooksExist.Count} nos of book(s) available in your borrowed list.");
+                if (userBooksExist.Any(ub => borrowBooks.BookIds.Contains(ub.BookId)))
+                    throw new Exception("Only 1 copy of a book can be borrowed at any point of time!.");
+
                 bookinStores = await _libraryRepo.GetStockBooks(borrowBooks.BookIds);
+
                 foreach (var bookId in borrowBooks.BookIds)
                 {
                     if (bookinStores.Any(bs => bs.BookId == bookId))
@@ -56,7 +67,8 @@ namespace HexadLMServices.Logics
                 }
                 return await _libraryRepo.BorrowBooks(userBooks, bookinStores);
             }
-            return false;
+            else
+                return false;
         }
     }
 }

@@ -63,5 +63,22 @@ namespace HexadLMServices.Repositories.Repositories
                 throw ex;
             }
         }
+
+        public async Task<List<UserBook>> GetUserBooks(int userId)
+        {
+            try
+            {
+                using (var context = new HDBContext())
+                {
+                    return await context.UserBook
+                        .Where(b => b.UserId == userId)
+                        .ToListAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
