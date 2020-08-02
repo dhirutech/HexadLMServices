@@ -3,7 +3,6 @@ using HexadLMServices.Models;
 using HexadLMServices.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HexadLMServices.Controllers

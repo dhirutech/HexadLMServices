@@ -5,6 +5,7 @@ using HexadLMServices.Models;
 using HexadLMServices.Repositories.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using DataModel = HexadLMServices.Repositories.Models;
 
@@ -38,6 +39,22 @@ namespace HexadLMServices.Test.Logics
 
             Assert.IsNotNull(response);
             Assert.AreEqual(response, true);
+        }
+
+        [TestMethod]
+        public async Task AddBook_Throw_Exception()
+        {
+            string expectedErrorMsg = "Please provide a valid UserId.";
+            _bookVM.Id = 0;
+
+            try
+            {
+                var resultRes = await _bookLogic.AddBook(_bookVM);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.Message, expectedErrorMsg);
+            }
         }
 
         [TestMethod]

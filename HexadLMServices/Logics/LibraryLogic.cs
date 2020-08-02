@@ -2,12 +2,12 @@
 using HexadLMServices.Interfaces;
 using HexadLMServices.Models;
 using HexadLMServices.Repositories.Interfaces;
-using DataModel = HexadLMServices.Repositories.Models;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using DataModel = HexadLMServices.Repositories.Models;
 
 namespace HexadLMServices.Logics
 {
