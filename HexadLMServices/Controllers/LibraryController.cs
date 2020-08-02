@@ -33,11 +33,25 @@ namespace HexadLMServices.Controllers
         }
 
         [HttpPost("borrowbooks")]
-        public async Task<ActionResult> BorrowBooks(BorrowBook borrowBooks)
+        public async Task<ActionResult> BorrowBooks(MyBooks borrowBooks)
         {
             try
             {
                 var result = await _libraryLogic.BorrowBooks(borrowBooks);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Helper.CreateApiError(ex);
+            }
+        }
+
+        [HttpPost("returnbooks")]
+        public async Task<ActionResult> ReturnBooks(MyBooks returnBooks)
+        {
+            try
+            {
+                var result = await _libraryLogic.ReturnBooks(returnBooks);
                 return Ok(result);
             }
             catch (Exception ex)
