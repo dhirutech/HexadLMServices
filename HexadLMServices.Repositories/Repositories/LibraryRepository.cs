@@ -80,5 +80,34 @@ namespace HexadLMServices.Repositories.Repositories
                 throw ex;
             }
         }
+
+        public async Task<bool> RemoveMyBooksBackToStore(int userId, int bookId)
+        {
+            try
+            {
+                using (var context = new HDBContext())
+                {
+                    //remove book from mylist
+                    var userBook = await context.UserBook.Where(b => b.UserId == userId && b.BookId == bookId).FirstOrDefaultAsync();
+                    if (userBook != null)
+                    {
+                        context.UserBook.Remove(userBook);
+
+                        //add book back to store
+                        var bookStore = await context.BookStore.Where(b => b.BookId == bookId).FirstOrDefaultAsync();
+                        if (bookStore != null)
+                        {
+                            bookStore.StockCount++;
+                            context.BookStore.Update(bookStore);
+                        }
+                    }
+                    return await context.SaveChangesAsync() > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

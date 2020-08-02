@@ -10,5 +10,6 @@ namespace HexadLMServices.Repositories.Interfaces
         Task<List<BookStore>> GetStockBooks(List<int> bookIds);
         Task<bool> BorrowBooks(List<UserBook> userBooks, List<BookStore> bookStores);
         Task<List<UserBook>> GetUserBooks(int userId);
+        Task<bool> RemoveMyBooksBackToStore(int userId, int bookId);
     }
 }

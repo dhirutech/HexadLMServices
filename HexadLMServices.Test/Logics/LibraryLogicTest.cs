@@ -22,7 +22,7 @@ namespace HexadLMServices.Test.Logics
 
         private List<DataModel.Book> _bookDMList;
         private List<Book> _bookVMList;
-        private BorrowBook _borrowBook;
+        private MyBooks _borrowBook;
         private List<DataModel.BookStore> _bookStoreDMList;
         private List<DataModel.UserBook> _userBookDMList;
 
@@ -32,7 +32,7 @@ namespace HexadLMServices.Test.Logics
             _libraryLogic = new LibraryLogic(_mockMapper.Object, _mockLibraryRepo.Object);
             _bookDMList = Builder<DataModel.Book>.CreateListOfSize(2).Build().ToList();
             _bookVMList = Builder<Book>.CreateListOfSize(2).Build().ToList();
-            _borrowBook = Builder<BorrowBook>.CreateNew().Build();
+            _borrowBook = Builder<MyBooks>.CreateNew().Build();
             _borrowBook.UserId = 1;
             _borrowBook.BookIds = new List<int>() { 1, 2 };
             _bookStoreDMList = Builder<DataModel.BookStore>.CreateListOfSize(2).Build().ToList();
@@ -174,6 +174,55 @@ namespace HexadLMServices.Test.Logics
             try
             {
                 var response = await _libraryLogic.BorrowBooks(_borrowBook);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.Message, expectedError);
+            }
+        }
+
+        [TestMethod]
+        public async Task ReturnBooks_ReturnsTrue()
+        {
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
+            _mockLibraryRepo.Setup(x => x.RemoveMyBooksBackToStore(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(true);
+
+            var response = await _libraryLogic.ReturnBooks(_borrowBook);
+
+            Assert.IsTrue(response);
+        }
+
+        [TestMethod]
+        public async Task ReturnBooks_Returns_Exception1()
+        {
+            string expectedError = "No book available with you to return!.";
+            _userBookDMList = new List<DataModel.UserBook>();
+
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
+            _mockLibraryRepo.Setup(x => x.RemoveMyBooksBackToStore(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(true);
+
+            try
+            {
+                var response = await _libraryLogic.ReturnBooks(_borrowBook);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.Message, expectedError);
+            }
+        }
+
+        [TestMethod]
+        public async Task ReturnBooks_Returns_Exception2()
+        {
+            string expectedError = "No such bookId - 1 available with you to return!.";
+            _userBookDMList[0].BookId = 3;
+
+            _mockLibraryRepo.Setup(x => x.GetUserBooks(It.IsAny<int>())).ReturnsAsync(_userBookDMList);
+            _mockLibraryRepo.Setup(x => x.RemoveMyBooksBackToStore(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(true);
+
+            try
+            {
+                var response = await _libraryLogic.ReturnBooks(_borrowBook);
             }
             catch (Exception ex)
             {

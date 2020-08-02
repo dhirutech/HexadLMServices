@@ -28,7 +28,7 @@ namespace HexadLMServices.Logics
             return resBook;
         }
 
-        public async Task<bool> BorrowBooks(BorrowBook borrowBooks)
+        public async Task<bool> BorrowBooks(MyBooks borrowBooks)
         {
             var userBooks = new List<DataModel.UserBook>();
             var bookinStores = new List<DataModel.BookStore>();
@@ -69,6 +69,29 @@ namespace HexadLMServices.Logics
             }
             else
                 return false;
+        }
+
+        public async Task<bool> ReturnBooks(MyBooks returnBooks)
+        {
+            var status = false;
+            var userBooksExist = await _libraryRepo.GetUserBooks(returnBooks.UserId);
+            if (userBooksExist.Count > 0)
+            {
+                foreach (var bookId in returnBooks.BookIds)
+                {
+                    if (userBooksExist.Any(bs => bs.BookId == bookId))
+                    {
+                        //remove book from mylist and add book to store
+                        status = await _libraryRepo.RemoveMyBooksBackToStore(returnBooks.UserId, bookId);
+                    }
+                    else
+                        throw new Exception($"No such bookId - {bookId} available with you to return!.");
+                }
+            }
+            else
+                throw new Exception("No book available with you to return!.");
+
+            return status;
         }
     }
 }
