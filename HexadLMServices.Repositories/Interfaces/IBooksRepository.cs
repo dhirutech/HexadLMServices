@@ -5,7 +5,7 @@ namespace HexadLMServices.Repositories.Interfaces
 {
     public interface IBooksRepository
     {
-        Task<bool> AddBook(Book book);
+        Task<bool> AddBook(Book book, BookStore bookStore);
         Task<bool> EditBook(Book book);
         Task<bool> DeleteBook(int id);
     }

@@ -32,7 +32,7 @@ namespace HexadLMServices.Test.Logics
         public async Task AddBook_Sucessfully()
         {
             _mockMapper.Setup(m => m.Map<Book, DataModel.Book>(It.IsAny<Book>())).Returns(_bookDM);
-            _mockBookRepo.Setup(x => x.AddBook(It.IsAny<DataModel.Book>())).ReturnsAsync(true);
+            _mockBookRepo.Setup(x => x.AddBook(It.IsAny<DataModel.Book>(), It.IsAny<DataModel.BookStore>())).ReturnsAsync(true);
 
             var response = await _bookLogic.AddBook(_bookVM);
 

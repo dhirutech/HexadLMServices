@@ -8,15 +8,14 @@ namespace HexadLMServices.Repositories.Repositories
 {
     public class BooksRepository : IBooksRepository
     {
-        public async Task<bool> AddBook(Book book)
+        public async Task<bool> AddBook(Book book, BookStore bookStore)
         {
             try
             {
                 using (var context = new HDBContext())
                 {
-                    book.CreatedDate = DateTime.UtcNow;
-                    book.UpdatedDate = DateTime.UtcNow;
                     await context.Book.AddAsync(book);
+                    await context.BookStore.AddAsync(bookStore);
                     return await context.SaveChangesAsync() > 0;
                 }
             }

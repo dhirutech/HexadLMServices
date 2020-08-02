@@ -20,6 +20,7 @@ namespace HexadLMServices.Test.Controllers
         private readonly Mock<HttpRequest> _req = new Mock<HttpRequest>();
         private LibraryController _controller;
         private List<Book> _bookVMList;
+        private BorrowBook _borrowBook;
 
         [TestInitialize]
         public void TestInitialization()
@@ -29,6 +30,9 @@ namespace HexadLMServices.Test.Controllers
             _controller = new LibraryController(_mockLibraryLogic.Object) { ControllerContext = controllerContext };
 
             _bookVMList = Builder<Book>.CreateListOfSize(2).Build().ToList();
+            _borrowBook = Builder<BorrowBook>.CreateNew().Build();
+            _borrowBook.UserId = 1;
+            _borrowBook.BookIds = new List<int>() { 1, 2 };
         }
 
         [TestMethod]
@@ -51,6 +55,17 @@ namespace HexadLMServices.Test.Controllers
             var resultRes = await _controller.GetBooks(null);
 
             Assert.IsNull(((ObjectResult)resultRes).Value);
+            Assert.AreEqual((int)HttpStatusCode.OK, ((ObjectResult)resultRes).StatusCode);
+        }
+
+        [TestMethod]
+        public async Task BorrowBooks_Returns_True()
+        {
+            _mockLibraryLogic.Setup(x => x.BorrowBooks(It.IsAny<BorrowBook>())).ReturnsAsync(true);
+
+            var resultRes = await _controller.BorrowBooks(_borrowBook);
+
+            Assert.AreEqual(((ObjectResult)resultRes).Value, true);
             Assert.AreEqual((int)HttpStatusCode.OK, ((ObjectResult)resultRes).StatusCode);
         }
     }
