@@ -10,8 +10,12 @@ namespace HexadLMServices.Utilities
         public AutoMapperHelper()
         {
             CreateMap<Book, DataModels.Book>()
+                .ForMember(dest => dest.BookId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+            CreateMap<DataModels.Book, Book>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.BookId));
         }
     }
 }

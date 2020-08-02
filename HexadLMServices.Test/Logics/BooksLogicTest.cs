@@ -3,10 +3,10 @@ using FizzWare.NBuilder;
 using HexadLMServices.Logics;
 using HexadLMServices.Models;
 using HexadLMServices.Repositories.Interfaces;
-using DataModel = HexadLMServices.Repositories.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
+using DataModel = HexadLMServices.Repositories.Models;
 
 namespace HexadLMServices.Test.Logics
 {
