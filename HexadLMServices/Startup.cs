@@ -23,6 +23,8 @@ namespace HexadLMServices
 
             services.AddScoped<IBooksLogic, BooksLogic>();
             services.AddScoped<IBooksRepository, BooksRepository>();
+            services.AddScoped<ILibraryLogic, LibraryLogic>();
+            services.AddScoped<ILibraryRepository, LibraryRepository>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
