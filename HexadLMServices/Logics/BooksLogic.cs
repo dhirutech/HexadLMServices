@@ -20,7 +20,8 @@ namespace HexadLMServices.Logics
         public async Task<bool> AddBook(Book book)
         {
             var resBook = _mapper.Map<DataModels.Book>(book);
-            return await _booksRepo.AddBook(resBook);
+            var resBookStore = _mapper.Map<DataModels.BookStore>(book);
+            return await _booksRepo.AddBook(resBook, resBookStore);
         }
 
         public async Task<bool> EditBook(Book book)

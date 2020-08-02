@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace HexadLMServices.Repositories.Models
 {
@@ -67,6 +69,10 @@ namespace HexadLMServices.Repositories.Models
             {
                 entity.ToTable("book_store", "hexad");
 
+                entity.HasIndex(e => e.BookId)
+                    .HasName("uniquectm_const_book")
+                    .IsUnique();
+
                 entity.Property(e => e.BookStoreId).HasColumnName("book_store_id");
 
                 entity.Property(e => e.BookId).HasColumnName("book_id");
@@ -82,8 +88,8 @@ namespace HexadLMServices.Repositories.Models
                 entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
 
                 entity.HasOne(d => d.Book)
-                    .WithMany(p => p.BookStore)
-                    .HasForeignKey(d => d.BookId)
+                    .WithOne(p => p.BookStore)
+                    .HasForeignKey<BookStore>(d => d.BookId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("book_store_book_fkey");
             });

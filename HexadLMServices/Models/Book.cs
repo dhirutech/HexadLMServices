@@ -11,5 +11,6 @@ namespace HexadLMServices.Models
         public string Publication { get; set; }
         public DateTime? Yearofpub { get; set; }
         public bool IsActive { get; set; }
+        public int StockCount { get; set; } = 0;
     }
 }

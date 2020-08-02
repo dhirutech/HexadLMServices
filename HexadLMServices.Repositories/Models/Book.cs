@@ -7,7 +7,6 @@ namespace HexadLMServices.Repositories.Models
     {
         public Book()
         {
-            BookStore = new HashSet<BookStore>();
             UserBook = new HashSet<UserBook>();
         }
 
@@ -23,7 +22,7 @@ namespace HexadLMServices.Repositories.Models
         public DateTime? UpdatedDate { get; set; }
         public int? UpdatedBy { get; set; }
 
-        public virtual ICollection<BookStore> BookStore { get; set; }
+        public virtual BookStore BookStore { get; set; }
         public virtual ICollection<UserBook> UserBook { get; set; }
     }
 }

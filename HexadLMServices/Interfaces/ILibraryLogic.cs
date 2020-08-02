@@ -7,5 +7,6 @@ namespace HexadLMServices.Interfaces
     public interface ILibraryLogic
     {
         Task<List<Book>> GetBooks(string searchText);
+        Task<bool> BorrowBooks(BorrowBook borrowBooks);
     }
 }

@@ -66,6 +66,7 @@ CREATE TABLE hexad.book_store (
 	updated_date timestamp NULL,
 	updated_by int4 NULL,
 	CONSTRAINT pk_book_store PRIMARY KEY (book_store_id),
+	CONSTRAINT uniquectm_const_book UNIQUE (book_id),
 	CONSTRAINT book_store_book_fkey FOREIGN KEY (book_id) REFERENCES hexad.book(book_id)
 );
 
